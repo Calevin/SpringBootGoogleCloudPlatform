@@ -1,5 +1,7 @@
 package com.calevin.springbootgcp.controladores;
 
+import com.calevin.springbootgcp.dtos.ConvertidorEntidadUnoDTO;
+import com.calevin.springbootgcp.dtos.GetEntidadUnoDTO;
 import com.calevin.springbootgcp.entidades.EntidadUno;
 import com.calevin.springbootgcp.errores.NotFoundException;
 import com.calevin.springbootgcp.servicios.EntidadUnoService;
@@ -42,8 +44,9 @@ public class EntidadUnoController {
      * @return Null si no encuentra el registro
      */
     @GetMapping("/entidadUno/{id}")
-    public ResponseEntity<EntidadUno> obtenerUno(@PathVariable Long id) {
+    public ResponseEntity<GetEntidadUnoDTO> obtenerUno(@PathVariable Long id) {
         return entidadUnoService.findById(id)
+                .map(ConvertidorEntidadUnoDTO::convertirEntidadUnoToGetEntidadUno)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException(id));
     }
