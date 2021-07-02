@@ -16,8 +16,8 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleRegistroNoEncontrado(NotFoundException ex) {
 
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage()));
+                .status(HttpStatus.NO_CONTENT)
+                .body(new ApiError(HttpStatus.NO_CONTENT, ex.getMessage()));
     }
 
     @Override

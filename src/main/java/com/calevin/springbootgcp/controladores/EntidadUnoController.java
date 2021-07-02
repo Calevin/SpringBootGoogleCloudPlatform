@@ -1,6 +1,7 @@
 package com.calevin.springbootgcp.controladores;
 
 import com.calevin.springbootgcp.entidades.EntidadUno;
+import com.calevin.springbootgcp.errores.NotFoundException;
 import com.calevin.springbootgcp.servicios.EntidadUnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class EntidadUnoController {
     public ResponseEntity<EntidadUno> obtenerUno(@PathVariable Long id) {
         return entidadUnoService.findById(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.noContent().build());
+                .orElseThrow(() -> new NotFoundException(id));
     }
 
     /**
