@@ -74,7 +74,7 @@ public class EntidadUnoController {
                     editar.setId(id);
                     return ResponseEntity.ok(entidadUnoService.save(editar));
                 })
-                .orElse(ResponseEntity.noContent().build());
+                .orElseThrow(() -> new NotFoundException(id));
     }
 
     /**
@@ -91,6 +91,6 @@ public class EntidadUnoController {
                     entidadUnoService.deleteById(id);
                     return ResponseEntity.status(HttpStatus.OK).build();
                 })
-                .orElse(ResponseEntity.noContent().build());
+                .orElseThrow(() -> new NotFoundException(id));
     }
 }
