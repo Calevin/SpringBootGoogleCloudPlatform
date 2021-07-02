@@ -3,6 +3,8 @@ package com.calevin.springbootgcp.controladores;
 import com.calevin.springbootgcp.entidades.EntidadUno;
 import com.calevin.springbootgcp.servicios.EntidadUnoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +25,13 @@ public class EntidadUnoController {
      * @return
      */
     @GetMapping("/entidadUno")
-    public List<EntidadUno> obtenerTodos() {
-        return entidadUnoService.findAll();
+    public ResponseEntity<List<EntidadUno>> obtenerTodos() {
+        List<EntidadUno> entidades = entidadUnoService.findAll();
+        if (entidades.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(entidades);
+        }
     }
 
     /**
@@ -34,8 +41,10 @@ public class EntidadUnoController {
      * @return Null si no encuentra el registro
      */
     @GetMapping("/entidadUno/{id}")
-    public EntidadUno obtenerUno(@PathVariable Long id) {
-        return entidadUnoService.findById(id).orElse(null);
+    public ResponseEntity<EntidadUno> obtenerUno(@PathVariable Long id) {
+        return entidadUnoService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     /**
@@ -45,8 +54,8 @@ public class EntidadUnoController {
      * @return registro insertado
      */
     @PostMapping("/entidadUno")
-    public EntidadUno nuevoRegistro(@RequestBody EntidadUno nuevo) {
-        return entidadUnoService.save(nuevo);
+    public ResponseEntity<EntidadUno> nuevoRegistro(@RequestBody EntidadUno nuevo) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(entidadUnoService.save(nuevo));
     }
 
     /**
@@ -57,15 +66,14 @@ public class EntidadUnoController {
      * @return registro editado
      */
     @PutMapping("/entidadUno/{id}")
-    public EntidadUno editarRegistro(@RequestBody EntidadUno editar, @PathVariable Long id) {
+    public ResponseEntity<EntidadUno> editarRegistro(@RequestBody EntidadUno editar, @PathVariable Long id) {
         return entidadUnoService
                 .findById(id)
                 .map( p -> {
                     editar.setId(id);
-                    System.out.println(editar);
-                    return entidadUnoService.save(editar);
+                    return ResponseEntity.ok(entidadUnoService.save(editar));
                 })
-                .orElse(null);
+                .orElse(ResponseEntity.noContent().build());
     }
 
     /**
@@ -75,13 +83,13 @@ public class EntidadUnoController {
      * @return
      */
     @DeleteMapping("/entidadUno/{id}")
-    public EntidadUno borrarRegistro(@PathVariable Long id) {
+    public ResponseEntity<?> borrarRegistro(@PathVariable Long id) {
         return entidadUnoService
                 .findById(id)
                 .map( p -> {
                     entidadUnoService.deleteById(id);
-                    return p;
+                    return ResponseEntity.status(HttpStatus.OK).build();
                 })
-                .orElse(null);
+                .orElse(ResponseEntity.noContent().build());
     }
 }
